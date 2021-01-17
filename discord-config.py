@@ -26,16 +26,15 @@ async def check_course_name(ctx, course: str):
         return False
     return True
 
-async def filter_courses(ctx, pattern: str):
-    # allows single course of list of courses with common prefix
-    if re.fullmatch("[0-9]{6}|[0-9]{0,5}\*", pattern) == None:
-        await ctx.send("'{}' is not a valid course pattern. Use a 6-digit number or a prefix followed by *.".format(pattern))
-        return None
-    # only consider 6-digit roles
-    candidates = [ role.name for role in ctx.guild.roles if is_course_name(role.name) ]
-    # convert pattern into regular expression
-    reg_pattern = pattern.replace("*", ".*")
-    return [ c for c in candidates if re.fullmatch(reg_pattern, c) != None ]
+async def match_roles(ctx, pattern: str):
+    # only consider roles that are valid course numbers
+    course_roles = [ role for role in ctx.guild.roles if is_course_name(role.name) ]
+    try:
+        matched = [ role for role in course_roles if re.fullmatch(pattern, role.name) != None ]
+        return matched
+    except re.error as e:
+        await ctx.send("RegExp error: {}".format(e))
+    return None
 
 @bot.event
 async def on_ready():
@@ -65,30 +64,37 @@ async def ccadd(ctx, *, courses: str):
 
 @bot.command()
 @commands.has_permissions(administrator=True)
-async def ccdelete(ctx, course_pattern: str):
-    courses = await filter_courses(ctx, course_pattern)
-    if courses == None:
+async def ccdelete(ctx, pattern: str):
+    roles = await match_roles(ctx, pattern)
+    if roles == None:
         return
-    categories = [ c for c in ctx.guild.categories if get_course_nr(c.name) in courses ]
-    for c in categories:
-        for ch in c.channels:
-            await ch.delete()
-        await c.delete()
-    roles = [ r for r in ctx.guild.roles if r.name in courses ]
-    for r in roles:
-        await r.delete()
-    # list full channel names for easy recreation
-    deleted = [ c.name for c in categories ]
-    await ctx.send("Deleted roles & channels for\n{}".format("\n".join(deleted)))
+    for role in roles:
+        categories = [ c for c in ctx.guild.categories if get_course_nr(c.name) == role.name ]
+        for category in categories:
+            try:
+                # grant role to self so we can see the category to delete it
+                await ctx.guild.me.add_roles(role)
+                for channel in category.channels:
+                    await channel.delete()
+                await category.delete()
+                await ctx.send("Deleted {}".format(category.name))
+            except discord.Forbidden:
+                await ctx.send("Failed to delete category {}. Check role order?".format(category.name))
+                continue
+        try:
+            await role.delete()
+        except discord.Forbidden:
+            await ctx.send("Failed to delete role {}. Check role order?".format(role.name))
 
 @bot.command()
 @commands.has_permissions(administrator=True)
-async def ccmatch(ctx, course_pattern: str):
-    courses = await filter_courses(ctx, course_pattern)
-    if courses == None:
+async def ccmatch(ctx, pattern: str):
+    roles = await match_roles(ctx, pattern)
+    if roles == None:
         return
-    categories = [ c.name for c in ctx.guild.categories if get_course_nr(c.name) in courses ]
-    await ctx.send("{} matches the following:\n{}".format(course_pattern, "\n".join(categories)))
+    course_nrs = [ r.name for r in roles ]
+    categories = [ c.name for c in ctx.guild.categories if get_course_nr(c.name) in course_nrs ]
+    await ctx.send("{} matches the following:\n{}".format(pattern, "\n".join(categories)))
 
 # run the bot - token is stored in separate file to avoid accidental check-in
 with open('token.txt') as f:

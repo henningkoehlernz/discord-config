@@ -2,17 +2,18 @@
 
 Bot for setting up discord channels via commands. Designed for Massey CSIT server, which has lots of similar categories, one for each course.
 
-# Setup
+## Setup
 
 * Install discord.py (https://discordpy.readthedocs.io/en/latest/intro.html)
 * Create a bot account and invite it to your server (https://discordpy.readthedocs.io/en/latest/discord.html)
-  - requires Administrator permission
+  - Required Permissions: Manage Roles, Manage Channels, View Channels, Send Messages
+  - Ensure its role is listed before any course roles (Server Settings > Roles)
 * Copy the token (under Bot on https://discord.com/developers/applications/...) and save as token.txt
 * Run the bot locally (python3 discord-config.py)
 
-# Commands
+## Commands
 
-The following commands are available (any server channel will work, requires Administrator permission):
+The following commands are available (any server channel the bot can see will work, author must have admin permission):
 * `!ccadd <course_names>`
 
 Will add roles & channels for the listed courses. Course names must start with a 6-digit number, and are separated by a newline character. Example:
@@ -26,11 +27,11 @@ Will add roles & channels for the listed courses. Course names must start with a
 
 * `!ccdelete <course_numbers>`
 
-Will delete matching roles & channels. Course numbers must either be a single 6-digit number, or a 0-5 digit number followed by `*`. Examples:
+Will delete matching roles & channels using regular expression. Examples:
 ```
-!ccdelete 159271
-!ccdelete 159*
-!ccdelete *
+!ccdelete 159271|158247
+!ccdelete 159.*
+!ccdelete .*
 ```
 
 *Note: Matching will be done via role names. Only 6-digit role names are considered, so non-course channels will never be deleted.*
@@ -39,7 +40,7 @@ Will delete matching roles & channels. Course numbers must either be a single 6-
 
 Like `!ccdelete` except that it only lists matching courses without deleting them.
 
-# Other
+## Other
 
 For role auto-assignment, YAGPDB bot can be used:
 * Setup of role auto-assign must be done manually on https://yagpdb.xyz/manage/ under rolecommands

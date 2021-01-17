@@ -36,6 +36,8 @@ Will delete matching roles & channels using regular expression. Examples:
 
 *Note: Matching will be done via role names. Only 6-digit role names are considered, so non-course channels will never be deleted.*
 
+**Watch out for active courses running in summer semester!**
+
 * `!ccmatch <course_numbers>`
 
 Like `!ccdelete` except that it only lists matching courses without deleting them.
@@ -43,5 +45,5 @@ Like `!ccdelete` except that it only lists matching courses without deleting the
 ## Other
 
 For role auto-assignment, YAGPDB bot can be used:
-* Setup of role auto-assign must be done manually on https://yagpdb.xyz/manage/ under rolecommands
+* Setup of role auto-assign must be done manually on https://yagpdb.xyz/manage/ under Tools & Utilities > Role Commands
 * Once set up, create new role menu (https://docs.yagpdb.xyz/tools-and-utilities/self-assignable-roles#role-menu)

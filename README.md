@@ -6,7 +6,8 @@ Bot for setting up discord channels via commands. Designed for Massey CSIT serve
 
 * Install discord.py (https://discordpy.readthedocs.io/en/latest/intro.html)
 * Create a bot account and invite it to your server (https://discordpy.readthedocs.io/en/latest/discord.html)
-  - Required Permissions: Manage Roles, Manage Channels, View Channels, Send Messages
+  - Required Privileged Gateway Intents (Bot): Message Content Intent
+  - Required Permissions (OAuth2): Manage Roles, Manage Channels, View Channels, Send Messages
   - Ensure its role is listed before any course roles (Server Settings > Roles)
 * Copy the token (under Bot on https://discord.com/developers/applications/...) and save as token.txt
 * Run the bot locally (python3 discord-config.py)

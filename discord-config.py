@@ -7,6 +7,7 @@ import re
 intents = discord.Intents.none()
 intents.guilds = True
 intents.guild_messages = True
+intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 # default channels that every course gets
 course_channels = ["general", "assignments"]

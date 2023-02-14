@@ -17,7 +17,7 @@ Bot for setting up discord channels via commands. Designed for Massey CSIT serve
 The following commands are available (any server channel the bot can see will work, author must have admin permission):
 * `!ccadd <course_names>`
 
-Will add roles & channels for the listed courses. Course names must start with a 6-digit number, and are separated by a newline character. Example:
+Will add roles & channels for the listed courses, reusing existing roles if possible. Course names must start with a 6-digit number, and are separated by a newline character. Example:
 ```
 !ccadd
 159271 Computational Thinking
@@ -27,21 +27,24 @@ Will add roles & channels for the listed courses. Course names must start with a
 *Note: This must be entered as a single command. Copy & paste or use `<shift-enter>`.*
 
 * `!ccdelete <course_numbers>`
+* `!rcdelete <course_numbers>`
 
-Will delete matching roles & channels using regular expression. Examples:
+Will delete matching channels (ccdelete) or roles (rcdelete) using regular expression. Examples:
 ```
 !ccdelete 159271|158247
+!rcdelete 159271|158247
 !ccdelete 159.*
 !ccdelete .*
 ```
 
-*Note: Matching will be done via role names. Only 6-digit role names are considered, so non-course channels will never be deleted.*
+*Note: Matching will be done via role names, so channels must be deleted before roles. Only 6-digit role names are considered, so non-course channels and roles will never be deleted.*
 
 **Watch out for active courses running in summer semester!**
 
 * `!ccmatch <course_numbers>`
+* `!rcmatch <course_numbers>`
 
-Like `!ccdelete` except that it only lists matching courses without deleting them.
+Like `!ccdelete` or `!rcdelete` except that it only lists matching courses or roles without deleting them.
 
 ## Other
 

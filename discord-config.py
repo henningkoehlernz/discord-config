@@ -77,11 +77,14 @@ async def ccdelete(ctx, pattern: str):
     if roles == None:
         return
     for role in roles:
+        # ensure we can see categories to delete them
+        await ctx.me.add_roles(role)
         categories = [ c for c in ctx.guild.categories if get_course_nr(c.name) == role.name ]
         for category in categories:
+            if category.overwrites_for(role).is_empty():
+                await ctx.send("{} lacks permissions for {}".format(role, category))
+                continue
             try:
-                # ensure we can see the category to delete it
-                await category.set_permissions(ctx.guild.me, view_channel=True)
                 for channel in category.channels:
                     await channel.delete()
                 await category.delete()

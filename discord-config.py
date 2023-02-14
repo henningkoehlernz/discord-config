@@ -80,8 +80,8 @@ async def ccdelete(ctx, pattern: str):
         categories = [ c for c in ctx.guild.categories if get_course_nr(c.name) == role.name ]
         for category in categories:
             try:
-                # grant role to self so we can see the category to delete it
-                await ctx.guild.me.add_roles(role)
+                # ensure we can see the category to delete it
+                await category.set_permissions(ctx.guild.me, view_channel=True)
                 for channel in category.channels:
                     await channel.delete()
                 await category.delete()
